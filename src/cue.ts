@@ -1,16 +1,19 @@
 import Ball from "./ball";
 import { PoolTable } from "./poolTable";
+import { Drawable } from "./types/drawable";
 import Vec2 from "./vec2";
 
-export class Cue {
-	table:PoolTable;
-	ball:Ball;
-	selected:boolean;
+export class Cue extends Drawable {
+	_isCue = true;
+	table: PoolTable;
+	ball: Ball;
+	selected: boolean;
 	sprite: HTMLImageElement;
 	mousePos: Vec2;
-	max_dist:number = 40;
+	max_dist: number = 40;
 
 	constructor(table:PoolTable){
+		super();
 		this.mousePos = new Vec2(0, 0);
 		this.ball = table.balls[0];
 		this.selected = false;

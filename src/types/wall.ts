@@ -1,7 +1,9 @@
 import Ball from "../ball";
 import Vec2 from "../vec2";
+import { Drawable } from "./drawable";
 
-export class Wall {
+export class Wall extends Drawable{
+	_isWall = true;
 	p1:Vec2;
 	p2:Vec2;
 	mid:Vec2;
@@ -9,6 +11,7 @@ export class Wall {
 	color: string = "black";
 
 	constructor(a:Vec2, b:Vec2) {
+		super();
 		this.p1 = a;
 		this.p2 = b;
 		this.mid = this.p1.sub(this.p1.sub(this.p2).multiplyScalor(0.5));

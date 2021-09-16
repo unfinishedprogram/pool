@@ -1,20 +1,19 @@
 import { playSound } from "./audio";
 import { spriteFromId } from "./ballSprite";
 import { StaticCollider } from "./staticCollider";
-import { IDrawable } from "./types/drawable";
+import { Drawable } from "./types/drawable";
 import { Wall } from "./types/wall";
 import Vec2 from "./vec2";
-export default class Ball implements IDrawable {
+export default class Ball extends Drawable {
+	_isBall = true;
 	static current_id = 0;
 	pos:Vec2;
 	vol:Vec2 = new Vec2(0,0);
-
 	mass: number = 0.15 ; //kg
 	radius: number = 5.7/2; //cm
 	active: boolean = true;
 	friction: number = 0.0436;
 	damping: number = 0.99;
-
 
 	id:number;
 	sprite:HTMLImageElement;
@@ -49,10 +48,10 @@ export default class Ball implements IDrawable {
 	static applyWallCollision (a:Ball, w:Wall){
 		a.vol = a.vol.rotateByVec(w.getNormal()).multiplyScalor(-1);
 		a.vol = a.vol.rotateByVec(new Vec2(1, 1))
-		// a.pos.add(w.normal.multiplyScalor(t_ball.y + ball.radius - t_p1.y));
 	}
 
 	constructor(pos:Vec2) {
+		super();
 		this.id = Ball.getId();
 		this.sprite = spriteFromId(this.id);
 		this.pos = pos;
@@ -64,7 +63,7 @@ export default class Ball implements IDrawable {
 		this.vol = this.vol.multiplyScalor(1 - (t * this.friction))
 	}
 
-	draw(ctx:CanvasRenderingContext2D) {
+	draw(ctx:CanvasRenderingContext2D):void {
 		const x1 = (this.pos.x - this.radius);
 		const y1 = (this.pos.y - this.radius);
 		const x2 = this.radius * 2;

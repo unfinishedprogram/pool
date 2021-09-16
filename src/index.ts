@@ -32,10 +32,10 @@ const WALLS = [
 ]
 
 WALLS.forEach(wall => {
-	myTable.addWall(wall);
+	myTable.addObject(wall);
 })
 CORNERS.forEach(vec => {
-	myTable.addCollider(new StaticCollider(vec, 5.7/2));
+	myTable.addObject(new StaticCollider(vec, 5.7/2));
 })
 
 let physicsLoop = setInterval(() => {

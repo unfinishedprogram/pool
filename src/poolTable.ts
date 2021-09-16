@@ -1,6 +1,7 @@
 import Ball from "./ball";
 import { Cue } from "./cue";
 import { StaticCollider } from "./staticCollider";
+import { Drawable } from "./types/drawable";
 import { Wall } from "./types/wall";
 import Vec2 from "./vec2";
 
@@ -14,6 +15,8 @@ export class PoolTable {
 	colliders: StaticCollider[] = [];
 	walls:Wall[] = [];
 
+	drawables:Drawable[] = [];
+
 	ctx:CanvasRenderingContext2D;
 	canvas:HTMLCanvasElement;
 	collision_buffer: Ball[][] = [];
@@ -22,7 +25,6 @@ export class PoolTable {
 	inner_height:number = 112;
 	width: number = 224 + 16; // cm
 	height: number = 112 + 16; // cm
-	cue:Cue;
 
 	constructor(canvas:HTMLCanvasElement) {
 		this.canvas = canvas;
@@ -31,10 +33,10 @@ export class PoolTable {
 		canvas.width = this.width * this.canvas_scale;
 		canvas.height = this.height * this.canvas_scale;
 
-		this.addBall(new Ball(new Vec2(0, 0)));
+		this.addObject(new Ball(new Vec2(0, 0)));
 
 		this.makeBallTriangle();
-		this.cue = new Cue(this);
+		this.addObject(new Cue(this))
 
 		this.ctx.transform(1, 0, 0, 1, this.width/2,  this.height/2);
 
@@ -43,36 +45,17 @@ export class PoolTable {
 		this.fitToWindow();
 	}
 
-	addBall(ball:Ball){
-		this.balls.push(ball);
-	}
-
-	addCollider(collider:StaticCollider){
-		this.colliders.push(collider);
-	}
-	
-	addWall(wall:Wall){
-		this.walls.push(wall)
+	addObject(obj:any){
+		if(obj._isDrawable) this.drawables.push(obj as Drawable);
+		if(obj._isBall) this.balls.push(obj as Ball);
+		if(obj._isWall)  this.walls.push(obj as Wall);
+		if(obj._isStaticCollider) this.colliders.push(obj as StaticCollider);
 	}
 
 	draw(){
 		this.ctx.scale(this.canvas_scale, this.canvas_scale);
 		this.ctx.clearRect(-this.width/2, -this.height/2, this.width, this.height);
-
-		this.balls.forEach(ball => {
-			ball.draw(this.ctx);
-		})
-
-		this.colliders.forEach(collider => {
-			collider.draw(this.ctx);
-		})
-		
-		this.walls.forEach(wall => {
-			wall.draw(this.ctx);
-		})
-
-		this.cue.draw(this.ctx);
-
+		this.drawables.forEach((obj:Drawable) => obj.draw(this.ctx))
 		this.ctx.scale(1/this.canvas_scale, 1/this.canvas_scale);
 	}
 
@@ -96,7 +79,7 @@ export class PoolTable {
 		let r = 6;
 		for(let i = 0; i < 5; i++){
 			for(let j = x; j > 0; j--){
-				this.addBall(new Ball(new Vec2((i * r) - 60, (j * r + r / 2 * i) - r * 3)));
+				this.addObject(new Ball(new Vec2((i * r) - 60, (j * r + r / 2 * i) - r * 3)));
 			}
 			x -= 1;
 		}
@@ -113,25 +96,6 @@ export class PoolTable {
 				}
 			})
 		})
-
-		// this.balls.forEach(ball => {
-		// 	if (ball.pos.x > maxx - ball.radius){
-		// 		ball.pos.x = maxx - ball.radius
-		// 		ball.vol.x *= -1;
-		// 	}
-		// 	if (ball.pos.x < -maxx + ball.radius) {
-		// 		ball.pos.x = -maxx + ball.radius
-		// 		ball.vol.x *= -1;
-		// 	}
-		// 	if (ball.pos.y > maxy - ball.radius) {
-		// 		ball.pos.y = maxy - ball.radius
-		// 		ball.vol.y *= -1;
-		// 	}
-		// 	if (ball.pos.y < -maxy + ball.radius) {
-		// 		ball.pos.y = -maxy + ball.radius
-		// 		ball.vol.y *= -1;
-		// 	}
-		// })
 
 		this.findCollisions();
 		this.processCollisions();
