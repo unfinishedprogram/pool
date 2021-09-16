@@ -1,6 +1,7 @@
 import Ball from "./ball";
 import { Cue } from "./cue";
 import { StaticCollider } from "./staticCollider";
+import { CircleCollider } from "./types/circleCollider";
 import { Drawable } from "./types/drawable";
 import { Wall } from "./types/wall";
 import Vec2 from "./vec2";
@@ -86,9 +87,6 @@ export class PoolTable {
 	}
 
 	step(t:number) {
-		let maxx = this.inner_width/2;
-		let maxy = this.inner_height/2;
-
 		this.balls.forEach(ball => {
 			this.walls.forEach(wall => {
 				if(wall.isColliding(ball)) {
@@ -102,7 +100,7 @@ export class PoolTable {
 		
 		this.balls.forEach(ball => {
 			this.colliders.forEach(c => {
-				if(this.isColliding(ball, c)){
+				if(CircleCollider.isColliding(ball, c)){
 					Ball.applyStaticCollision(ball, c);
 				}
 			})
@@ -111,30 +109,12 @@ export class PoolTable {
 		this.balls.forEach(ball => ball.step(t));
 	}
 
-	isColliding(a:Ball|StaticCollider, b:Ball|StaticCollider){
-		let r = a.radius+b.radius;
-
-		if(Math.abs(a.pos.x - b.pos.x) > r){
-			return false;
-		}
-
-		if(Math.abs(a.pos.y - b.pos.y) > r){
-			return false;
-		}
-
-		if(Vec2.dist(a.pos, b.pos) > r){
-			return false;
-		}
-
-		return true;
-	}
-
 	findCollisions() {
 		let added = {} as IDict;
 		this.balls.forEach(a => {
 			added[a.id] = [];
 			this.balls.forEach(b => {
-				if ((a.id != b.id) && this.isColliding(a, b)) {
+				if ((a.id != b.id) && CircleCollider.isColliding(a, b)) {
 					if(
 					!added[a.id]?.includes(b.id) && 
 					!added[b.id]?.includes(a.id)) {

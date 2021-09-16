@@ -1,10 +1,14 @@
 import { playSound } from "./audio";
 import { spriteFromId } from "./ballSprite";
 import { StaticCollider } from "./staticCollider";
+import { CircleCollider } from "./types/circleCollider";
 import { Drawable } from "./types/drawable";
 import { Wall } from "./types/wall";
 import Vec2 from "./vec2";
-export default class Ball extends Drawable {
+
+
+export default class Ball extends CircleCollider implements Drawable {
+	_isDrawable = true;
 	_isBall = true;
 	static current_id = 0;
 	pos:Vec2;
@@ -17,6 +21,15 @@ export default class Ball extends Drawable {
 
 	id:number;
 	sprite:HTMLImageElement;
+
+	constructor(pos:Vec2) {
+		super(pos, 5.7/2);
+		this.id = Ball.getId();
+		this.sprite = spriteFromId(this.id);
+		this.pos = pos;
+		this.vol = new Vec2(0, 0);
+	}
+
 	static getId = () => Ball.current_id ++;
 
 	static applyCollison(a:Ball, b:Ball) {
@@ -50,13 +63,7 @@ export default class Ball extends Drawable {
 		a.vol = a.vol.rotateByVec(new Vec2(1, 1))
 	}
 
-	constructor(pos:Vec2) {
-		super();
-		this.id = Ball.getId();
-		this.sprite = spriteFromId(this.id);
-		this.pos = pos;
-		this.vol = new Vec2(0, 0);
-	}
+
 
 	step(t:number) {
 		this.pos = this.pos.add(this.vol.multiplyScalor(t))

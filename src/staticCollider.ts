@@ -1,11 +1,10 @@
+import Ball from "./ball";
+import { CircleCollider } from "./types/circleCollider";
 import Vec2 from "./vec2";
 
-export class StaticCollider {
-	pos:Vec2;
-	radius:number;
+export class StaticCollider extends CircleCollider {
 	constructor(pos:Vec2, radius:number){
-		this.pos = pos;
-		this.radius = radius;
+		super(pos, radius);
 	}
 	draw(ctx:CanvasRenderingContext2D){
 		ctx.beginPath();
