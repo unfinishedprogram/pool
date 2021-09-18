@@ -1,8 +1,7 @@
 import Ball from "../ball";
 import Vec2 from "../vec2";
-import { Drawable } from "./drawable";
 
-export class Wall extends Drawable{
+export class Wall {
 	_isWall = true;
 	p1:Vec2;
 	p2:Vec2;
@@ -11,7 +10,6 @@ export class Wall extends Drawable{
 	color: string = "black";
 
 	constructor(a:Vec2, b:Vec2) {
-		super();
 		this.p1 = a;
 		this.p2 = b;
 		this.mid = this.p1.sub(this.p1.sub(this.p2).multiplyScalor(0.5))
@@ -50,9 +48,18 @@ export class Wall extends Drawable{
 		if(t_ball.y - ball.radius > 0) {
 			return false;
 		}
+
 		if( t_ball.x + ball.radius < t_p1.x || t_ball.x - ball.radius > t_p2.x){
 			return false;
 		}
 		return true
+	}
+
+	applyCollision(ball:Ball){
+		let t_ball = ball.pos.sub(this.mid);
+		t_ball = t_ball.rotateByVec(this.normal);
+
+		ball.pos.add(this.normal.multiplyScalor(t_ball.y))
+		ball.vol = ball.vol.sub((this.normal.multiplyScalor(Vec2.dotProduct(ball.vol, this.normal) * 2)))
 	}
 }

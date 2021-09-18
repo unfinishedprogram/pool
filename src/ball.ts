@@ -53,14 +53,10 @@ export default class Ball extends CircleCollider implements Drawable {
 		const n = a.pos.sub(c.pos).normalize();
 		let dist = a.pos.sub(c.pos).magnitude();
 		a.pos = a.pos.add(n.multiplyScalor(-(dist-(a.radius+c.radius))));
-
 		let p = a.vol.x * n.x + a.vol.y * n.y;
 		a.vol = a.vol.add(n.multiplyScalor(-p));
 	}
 
-	static applyWallCollision (a:Ball, w:Wall){
-		a.vol = a.vol.sub((w.getNormal().multiplyScalor(Vec2.dotProduct(a.vol,w.getNormal()) * 2)))
-	}
 
 	step(t:number) {
 		this.pos = this.pos.add(this.vol.multiplyScalor(t))
