@@ -9,7 +9,6 @@ export class CircleCollider {
 		this.pos = pos;
 	}
 
-
 	static isColliding(a:CircleCollider, b:CircleCollider){
 		let r = a.radius + b.radius;
 

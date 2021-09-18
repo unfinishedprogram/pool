@@ -59,11 +59,8 @@ export default class Ball extends CircleCollider implements Drawable {
 	}
 
 	static applyWallCollision (a:Ball, w:Wall){
-		a.vol = a.vol.rotateByVec(w.getNormal()).multiplyScalor(-1);
-		a.vol = a.vol.rotateByVec(new Vec2(1, 1))
+		a.vol = a.vol.sub((w.getNormal().multiplyScalor(Vec2.dotProduct(a.vol,w.getNormal()) * 2)))
 	}
-
-
 
 	step(t:number) {
 		this.pos = this.pos.add(this.vol.multiplyScalor(t))

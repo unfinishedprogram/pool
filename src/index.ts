@@ -23,7 +23,7 @@ const CORNERS = [
 const WALLS = [
 	new Wall(new Vec2(-112, 50), new Vec2(-112, -50)),
 	new Wall(new Vec2(112, -50), new Vec2(112, 50)),
-
+	
 	new Wall(new Vec2(8, -56), new Vec2(105, -56)),
 	new Wall(new Vec2(-105, -56), new Vec2(-8, -56)),
 
@@ -34,6 +34,7 @@ const WALLS = [
 WALLS.forEach(wall => {
 	myTable.addObject(wall);
 })
+
 CORNERS.forEach(vec => {
 	myTable.addObject(new StaticCollider(vec, 5.7/2));
 })

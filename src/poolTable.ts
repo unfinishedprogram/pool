@@ -36,7 +36,7 @@ export class PoolTable {
 
 		this.addObject(new Ball(new Vec2(0, 0)));
 
-		this.makeBallTriangle();
+		// this.makeBallTriangle();
 		this.addObject(new Cue(this))
 
 		this.ctx.transform(1, 0, 0, 1, this.width/2,  this.height/2);
