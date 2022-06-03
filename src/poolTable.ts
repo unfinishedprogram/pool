@@ -20,7 +20,7 @@ export class PoolTable {
 
 	ctx:CanvasRenderingContext2D;
 	canvas:HTMLCanvasElement;
-	collision_buffer: Ball[][] = [];
+	collision_buffer: [Ball, Ball][] = [];
 
 	inner_width:number = 224;
 	inner_height:number = 112;
@@ -110,26 +110,33 @@ export class PoolTable {
 	}
 
 	findCollisions() {
-		let added = {} as IDict;
-		this.balls.forEach(a => {
-			added[a.id] = [];
-			this.balls.forEach(b => {
-				if ((a.id != b.id) && CircleCollider.isColliding(a, b)) {
-					if(
-					!added[a.id]?.includes(b.id) && 
-					!added[b.id]?.includes(a.id)) {
-						this.collision_buffer.push([a, b])
-						added[a.id].push(b.id)
-					}
+		// let added = {} as IDict;
+		// this.balls.forEach(a => {
+		// 	added[a.id] = [];
+		// 	this.balls.forEach(b => {
+		// 		if ((a.id != b.id) && CircleCollider.isColliding(a, b)) {
+		// 			if(
+		// 			!added[a.id]?.includes(b.id) && 
+		// 			!added[b.id]?.includes(a.id)) {
+		// 				this.collision_buffer.push([a, b])
+		// 				added[a.id].push(b.id)
+		// 			}
+		// 		}
+		// 	})
+		// })
+
+		for(let i = 0; i < this.balls.length; i++){
+			for(let j = i + 1; j < this.balls.length; j++){
+				const pair:[Ball, Ball] = [this.balls[i], this.balls[j]]
+				if(CircleCollider.isColliding(...pair)) {
+					this.collision_buffer.push(pair)
 				}
-			})
-		})
+			}
+		}
 	}
 
 	processCollisions() {
-		this.collision_buffer.forEach((pair:Ball[]) => {
-			Ball.applyCollison(pair[0], pair[1])
-		})
-		this.collision_buffer = [];
+		this.collision_buffer.forEach(pair => Ball.applyCollison(...pair));
+		this.collision_buffer.length = 0;
 	}
 }
