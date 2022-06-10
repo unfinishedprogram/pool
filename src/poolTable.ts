@@ -6,15 +6,11 @@ import { Drawable } from "./types/drawable";
 import { Wall } from "./types/wall";
 import Vec2 from "./vec2";
 
-interface IDict {
-	[index: number]: number[];
-}
-
 export class PoolTable {
 	canvas_scale = 8;
 	balls: Ball[] = [];
+	walls: Wall[] = [];
 	colliders: StaticCollider[] = [];
-	walls:Wall[] = [];
 
 	drawables:Drawable[] = [];
 
@@ -37,7 +33,7 @@ export class PoolTable {
 		this.addObject(new Ball(new Vec2(0, 0)));
 
 		this.makeBallTriangle();
-		this.addObject(new Cue(this))
+		this.addObject(new Cue(this));
 
 		this.ctx.transform(1, 0, 0, 1, this.width/2,  this.height/2);
 
@@ -86,25 +82,26 @@ export class PoolTable {
 		}
 	}
 
-	step(t:number) {
-		this.balls.forEach(ball => {
-			this.walls.forEach(wall => {
-				if(wall.isColliding(ball)) {
-					wall.applyCollision(ball)
-				}
-			})
-		})
-
-		this.findCollisions();
-		this.processCollisions();
-		
+	handleStaticCollisions():void {
 		this.balls.forEach(ball => {
 			this.colliders.forEach(c => {
 				if(CircleCollider.isColliding(ball, c)){
 					Ball.applyStaticCollision(ball, c);
 				}
 			})
+
+			this.walls.forEach(wall => {
+				if(wall.isColliding(ball)) {
+					wall.applyCollision(ball)
+				}
+			})
 		})
+	}
+
+	step(t:number) {
+		this.findCollisions();
+		this.processCollisions();
+		this.handleStaticCollisions();
 
 		this.balls.forEach(ball => ball.step(t));
 	}
